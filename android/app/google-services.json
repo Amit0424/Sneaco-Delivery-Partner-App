@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "490050089010",
+    "project_id": "sceaco-65af5",
+    "storage_bucket": "sceaco-65af5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:490050089010:android:52c476ec9c80dcb05b4c2b",
+        "android_client_info": {
+          "package_name": "com.example.sneaco_delivery_partner_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAS8jsRdSwGoyZGirO8twlAOcDclapcsiM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
