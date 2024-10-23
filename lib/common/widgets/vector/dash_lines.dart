@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class DashLines extends StatelessWidget {
   const DashLines(
-      {Key? key, this.width = 1, this.color = Colors.black, this.count = 3})
-      : super(key: key);
+      {super.key, this.width = 1, this.color = Colors.black, this.count = 3});
+
   final double width;
   final Color color;
   final int count;
@@ -26,7 +26,7 @@ class DashLines extends StatelessWidget {
                     decoration: BoxDecoration(color: color),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 2,
                   height: 5,
                 ),

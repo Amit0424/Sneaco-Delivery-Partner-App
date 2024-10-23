@@ -4,15 +4,15 @@ class CColors {
   CColors._();
 
   // App Basic Colors
-  static const Color primary = Color(0xFF2164F3);
-  static const Color secondary = Color(0xFFD7E4FF);
+  static const Color primary = Color(0xFF56BF7E);
+  static const Color secondary = Color(0xFFD0F8B9);
   static const Color accent = Color(0xff7F7F7F);
   static const Color appBarColor = Color(0xFFAA65C1);
   static const Color other = Color(0xFF3C7AFF);
 
   // Text Colors
   static const Color textPrimary = Color(0xFF333333);
-  static const Color textSecondary = Color(0xFF6C757D);
+  static const Color textSecondary = Color(0xFF969AA4);
   static const Color textWhite = Colors.white;
 
   // Icon Colors

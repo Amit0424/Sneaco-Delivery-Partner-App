@@ -6,8 +6,15 @@ class CImages {
 
   // Login
 
-  static String loginLogo = "assets/images/login_image.svg";
-  static String indFlag = "assets/icons/ind_flag.png";
+  static const String path = 'assets/svgs/';
+  static const String loginDeliveryPartner =
+      '${path}login_delivery_partner.svg';
+  static const String loginEllipse = '${path}login_ellipse.svg';
+  static const String whiteCircle = '${path}white_circle.svg';
+  static const String lightGreenCircle = '${path}light_pink_circle.svg';
+  static const String veryLightGreenCircle =
+      '${path}very_light_pink_circle.svg';
+  static const String lightGreyCircle = '${path}light_grey_circle.svg';
 
   // Social Logos
 
@@ -19,7 +26,6 @@ class CImages {
   static String offersIcon = "assets/icons/offers_icon.svg";
   static String offersColorsIcon = "assets/icons/offers_color_icon.svg";
   static String starIcon = "assets/icons/star_icon.svg";
-
 
   // Dialog
 
