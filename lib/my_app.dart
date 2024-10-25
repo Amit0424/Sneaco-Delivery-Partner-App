@@ -44,7 +44,7 @@ class AuthService {
           } else {
             return StreamBuilder(
               stream: FirebaseFirestore.instance
-                  .collection('deliveryPartner')
+                  .collection('deliveryPartners')
                   .doc(user.uid)
                   .snapshots(),
               builder: (BuildContext context, AsyncSnapshot snapshot) {

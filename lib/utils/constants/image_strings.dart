@@ -16,7 +16,12 @@ class CImages {
       '${path}very_light_pink_circle.svg';
   static const String lightGreyCircle = '${path}light_grey_circle.svg';
 
-  // Social Logos
+  // Profile Icons
+  static const String calender = '${path}calender.svg';
+  static const String check = '${path}check.svg';
+  static const String location = '${path}location.svg';
+  static const String user = '${path}user.svg';
+  static const String camera = '${path}camera.svg';
 
   // Home Icons
 

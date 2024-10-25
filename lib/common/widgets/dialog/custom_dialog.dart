@@ -9,8 +9,8 @@ class CustomDialog {
     required BuildContext context,
     required String title,
     String? subTitle,
-    required void Function()? firstButtonTap,
-    required String firstButtonName,
+    void Function()? firstButtonTap,
+    String? firstButtonName,
     required void Function()? secondButtonTap,
     required String secondButtonName,
   }) {
@@ -40,28 +40,30 @@ class CustomDialog {
                     ),
                     if (subTitle != null)
                       Container(
-                          margin: EdgeInsets.only(bottom: 20),
+                          margin: const EdgeInsets.only(bottom: 20),
                           child: Text(
                             subTitle,
-                            style: TextStyle(color: Colors.grey),
+                            style: const TextStyle(color: Colors.grey),
                           )),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Expanded(
-                              child: Container(
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15)),
-                                  child: TextButton(
-                                      onPressed: firstButtonTap,
-                                      child: Text(
-                                        firstButtonName,
-                                        style: const TextStyle(
-                                            color: CColors.buttonPrimary,
-                                            fontWeight: FontWeight.bold),
-                                      )))),
+                          if (firstButtonName != null)
+                            Expanded(
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(15)),
+                                    child: TextButton(
+                                        onPressed: firstButtonTap,
+                                        child: Text(
+                                          firstButtonName,
+                                          style: const TextStyle(
+                                              color: CColors.buttonPrimary,
+                                              fontWeight: FontWeight.bold),
+                                        )))),
                           Expanded(
                             child: InkWell(
                               onTap: secondButtonTap,
