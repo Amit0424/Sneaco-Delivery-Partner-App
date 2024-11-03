@@ -1,16 +1,52 @@
-# sneaco_delivery_partner_app
+# Sneaco Delivery Partner App
+Get a stable monthly income
 
-A new Flutter project.
+### Built With
+- Flutter (version 3.24.3)
+- Java JDK-17
 
 ## Getting Started
+To set up this project locally, follow these steps:
 
-This project is a starting point for a Flutter application.
+### Prerequisites
+Ensure you have the following installed:
+``
+- Flutter SDK (version 3.24.3)
+- Java JDK-17
 
-A few resources to get you started if this is your first Flutter project:
+### Installation
+1. Clone the repository:
+    
+    git clone https://github.com/Amit0424/Sneaco-Delivery-Partner-App.git
+    
+2. Navigate to the project directory:
+    
+    cd your-repo-name
+    
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+3. Install dependencies:
+    
+    flutter pub get
+    
+4. Run the application:
+    
+    flutter run
+    
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Usage
+### Running on an Emulator
+
+Use an Android (if configured) to test the app locally.
+
+### Building for Production
+
+Use the command below to generate a production build for Android:
+
+    flutter build apk --release
+
+## Contact
+Amit Chaudhary - [@linkedInHandle](https://www.linkedin.com/in/amit0424/)
+
+Project Link: [https://github.com/yourusername/your-repo-name](https://github.com/Amit0424/Sneaco-Delivery-Partner-App)
+
+Distributed by Amit Chaudhary.
