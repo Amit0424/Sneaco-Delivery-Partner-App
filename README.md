@@ -42,7 +42,7 @@ Use an Android (if configured) to test the app locally.
 
 Use the command below to generate a production build for Android:
 
-    flutter build apk --release
+    flutter build apk --split-per-abi
 
 ## Contact
 Amit Chaudhary - [@linkedInHandle](https://www.linkedin.com/in/amit0424/)
