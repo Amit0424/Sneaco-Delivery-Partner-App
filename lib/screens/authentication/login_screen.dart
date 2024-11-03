@@ -130,6 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     keyboardType: TextInputType.number,
                     errorText: "Enter a valid mobile number",
                     minLength: 10,
+                    maxLength: 10,
                   ),
                   SizedBox(height: screenHeight * 0.01),
                   Row(
@@ -143,9 +144,29 @@ class _LoginScreenState extends State<LoginScreen> {
                               termAccepted = !termAccepted;
                             });
                           }),
-                      Text(
-                        "By signing up I agree to the Terms of use and\nPrivacy Policy.",
-                        style: CustomTextTheme.lightTextTheme.bodySmall,
+                      RichText(
+                        text: TextSpan(
+                          children: const [
+                            TextSpan(text: "By signing up I agree to the "),
+                            TextSpan(
+                              text: "Terms of use",
+                              style: TextStyle(
+                                color: CColors.primary,
+                              ),
+                            ),
+                            TextSpan(text: " and\n"),
+                            TextSpan(
+                              text: "Privacy Policy.",
+                              style: TextStyle(
+                                color: CColors.primary,
+                              ),
+                            ),
+                          ],
+                          style: CustomTextTheme.lightTextTheme.titleSmall
+                              ?.copyWith(
+                            fontSize: 13,
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -158,18 +179,22 @@ class _LoginScreenState extends State<LoginScreen> {
                       disabledBackgroundColor: Colors.grey,
                       disabledForegroundColor: Colors.white,
                       side: const BorderSide(color: Colors.transparent),
-                      padding: const EdgeInsets.symmetric(vertical: 0),
-                      textStyle: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                        color: Colors.white,
+                      padding: EdgeInsets.symmetric(
+                        vertical: screenHeight * 0.02,
                       ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50),
                       ),
-                      fixedSize: Size(screenWidth, screenHeight * 0.06),
+                      minimumSize: Size(screenWidth, screenHeight * 0.06),
                     ),
-                    child: const Text("Send OTP"),
+                    child: const Text(
+                      "Send OTP",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
                 ],
               ),

@@ -6,12 +6,9 @@ class CColors {
   // App Basic Colors
   static const Color primary = Color(0xFF56BF7E);
   static const Color secondary = Color(0xFFD0F8B9);
-  static const Color accent = Color(0xff7F7F7F);
-  static const Color appBarColor = Color(0xFFAA65C1);
-  static const Color other = Color(0xFF3C7AFF);
 
   // Text Colors
-  static const Color textPrimary = Color(0xFF333333);
+  static const Color textPrimary = Color(0xFF292D32);
   static const Color textSecondary = Color(0xFF969AA4);
   static const Color textWhite = Colors.white;
 
@@ -21,7 +18,7 @@ class CColors {
   // Background Colors
   static const Color light = Color(0xFFF6F6F6);
   static const Color dark = Color(0xFF272727);
-  static const Color primaryBackground = Color(0xFFF3F5FF);
+  static const Color primaryBackground = Color(0xFFFAFAFA);
 
   // Background Container Colors
   static const Color lightContainer = Color(0xFFFEFEFE);

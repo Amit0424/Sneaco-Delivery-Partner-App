@@ -24,49 +24,31 @@ class CImages {
   static const String camera = '${path}camera.svg';
 
   // Home Icons
+  static const String bag = "${path}bag.svg";
+  static const String account = "${path}account.svg";
+  static const String emptyOrdersList = "${path}emptyOrdersList.svg";
+  static const String mapPin = "${path}mapPin.svg";
+  static const String money = "${path}money.svg";
+  static const String paid = "${path}paid.svg";
+  static const String phone = "${path}phone.svg";
+  static const String pick = "${path}pick.svg";
+  static const String send = "${path}send.svg";
+  static const String veg = '${path}veg.svg';
 
-  static String locationIcon = "assets/icons/location_icon.svg";
-  static String walletIcon = "assets/icons/wallet_icon.svg";
-  static String searchIcon = "assets/icons/search_icon.svg";
-  static String offersIcon = "assets/icons/offers_icon.svg";
-  static String offersColorsIcon = "assets/icons/offers_color_icon.svg";
-  static String starIcon = "assets/icons/star_icon.svg";
+  // Account Icon
+  static const String userAlt = '${path}user_alt.svg';
+  static const String star = '${path}star.svg';
+  static const String phoneAlt = '${path}phone_alt.svg';
+  static const String mail = '${path}mail.svg';
+  static const String favoriteLocation = '${path}favorite_location.svg';
+  static const String gift = '${path}gift.svg';
+  static const String support = '${path}support.svg';
+  static const String question = '${path}question.svg';
+  static const String termsCondition = '${path}terms_condition.svg';
+  static const String privacy = '${path}privacy.svg';
+  static const String message = '${path}message.svg';
+  static const String logOut = '${path}log_out.svg';
 
-  // Dialog
-
-  static String circleIcon = "assets/icons/Circle.svg";
-  static String dotedLine = "assets/icons/doted_line.svg";
-
-  // Dr Images
-
-  static String dr1 = "assets/images/user_image1.png";
-  static String dr2 = "assets/images/user_image2.png";
-  static String dr3 = "assets/images/user_image3.png";
-
-  // Dr Full Size Image
-
-  static String drFull1 = "assets/images/user_image_full_1.png";
-
-  // --- Profile
-  static String userImage = 'assets/images/Avatar.png';
-
-  // -- placeholder
-  static String imagePlaceholder = "assets/images/placeholder.jpg";
-  static String imageNotFound = "assets/images/image_not_found.png";
-
-  // -- Animations
-  static String noInternet = "assets/animations/no_internet.json";
-  static String loading = "assets/animations/loading.json";
-  static String loadingWhite = "assets/animations/loading_white.json";
-  static String noData = "assets/animations/no_data.json";
-
-  //-- Network Images
-  static String userImagePlaceholderUrl =
-      "https://www.pngfind.com/pngs/m/610-6104451_image-placeholder-png-user-profile-placeholder-image-png.png";
-  static String benefitsImagePlaceholderUrl =
-      "https://cdn.sketchbubble.com/pub/media/catalog/product/optimized1/a/8/a8aa525305e197bbc09dc46d77eb961db69c5c999af6a82ef52bf768519dc542/physiotherapy-illustration-slide1.png";
-
-  /// Demo Images
-  static String hairCutForMenImage = "assets/images/haircut_men_image.png";
-  static String shopImage = "assets/images/shop_image_demo.png";
+  // Map Icons
+  static const String sendAlt = '${path}send_alt.svg';
 }

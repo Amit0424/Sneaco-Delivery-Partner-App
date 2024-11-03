@@ -5,8 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sneaco_delivery_partner_app/screens/authentication/login_screen.dart';
 import 'package:sneaco_delivery_partner_app/screens/home/home_screen.dart';
+import 'package:sneaco_delivery_partner_app/screens/home/provider/delivery_provider.dart';
+import 'package:sneaco_delivery_partner_app/screens/profile/model/profile_model.dart';
 import 'package:sneaco_delivery_partner_app/screens/profile/profile_screen.dart';
 import 'package:sneaco_delivery_partner_app/screens/profile/provider/profile_provider.dart';
+import 'package:sneaco_delivery_partner_app/utils/constants/color.dart';
 import 'package:sneaco_delivery_partner_app/utils/theme/theme.dart';
 
 class MyApp extends StatelessWidget {
@@ -19,6 +22,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (context) => ProfileProvider()),
+          ChangeNotifierProvider(create: (context) => DeliveryProvider()),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -52,7 +56,11 @@ class AuthService {
                   if (snapshot.hasData) {
                     DocumentSnapshot documentSnapshot = snapshot.data;
                     if (documentSnapshot.exists) {
-                      return HomeScreen();
+                      Provider.of<ProfileProvider>(context, listen: false)
+                          .updateProfile(ProfileModel.fromMap(
+                              documentSnapshot.data() as Map<String, dynamic>,
+                              user.uid));
+                      return const HomeScreen();
                     } else {
                       return const ProfileScreen();
                     }
@@ -60,7 +68,9 @@ class AuthService {
                 }
                 return const Scaffold(
                   body: Center(
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator(
+                      color: CColors.primary,
+                    ),
                   ),
                 );
               },
@@ -69,7 +79,9 @@ class AuthService {
         } else {
           return const Scaffold(
             body: Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(
+                color: CColors.primary,
+              ),
             ),
           );
         }

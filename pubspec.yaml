@@ -65,6 +65,9 @@ dependencies:
   geocoding: ^3.0.0
   permission_handler: ^11.3.1
   dart_geohash: ^2.1.0
+  google_maps_flutter: ^2.9.0
+  dotted_line: ^3.2.3
+  url_launcher: ^6.3.1
 
 dev_dependencies:
   flutter_test:

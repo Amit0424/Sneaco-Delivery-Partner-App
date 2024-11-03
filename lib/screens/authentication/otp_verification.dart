@@ -115,17 +115,19 @@ class _OtpVerificationState extends State<OtpVerification> {
                   disabledForegroundColor: Colors.white,
                   side: const BorderSide(color: Colors.transparent),
                   padding: const EdgeInsets.symmetric(vertical: 0),
-                  textStyle: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                    color: Colors.white,
-                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(50),
                   ),
                   fixedSize: Size(screenWidth, screenHeight * 0.06),
                 ),
-                child: const Text("Verify OTP"),
+                child: const Text(
+                  "Verify OTP",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ],
           ),

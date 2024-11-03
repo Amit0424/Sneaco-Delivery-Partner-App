@@ -1,546 +1,556 @@
-import 'package:cool_dropdown/cool_dropdown.dart';
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:provider/provider.dart';
+import 'package:sneaco_delivery_partner_app/screens/account/account_screen.dart';
+import 'package:sneaco_delivery_partner_app/screens/home/model/deliveries_model.dart';
+import 'package:sneaco_delivery_partner_app/screens/home/provider/delivery_provider.dart';
+import 'package:sneaco_delivery_partner_app/screens/map/map_screen.dart';
+import 'package:sneaco_delivery_partner_app/utils/constants/color.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-import '../../common/widgets/texts/section_heading.dart';
-import '../../utils/constants/color.dart';
+import '../../common/functions/open_google_map.dart';
+import '../../common/widgets/footer/footer.dart';
+import '../../common/widgets/header/header.dart';
 import '../../utils/constants/image_strings.dart';
-import '../../utils/constants/sizes.dart';
 import '../../utils/helpers/helper_functions.dart';
+import '../../utils/theme/custom_themes/text_theme.dart';
 
-class HomeScreen extends StatelessWidget {
-  HomeScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
-  final DropdownController _genderFilerDropDownController =
-      DropdownController();
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  double curLat = 0.0;
+  double curLong = 0.0;
 
   @override
   Widget build(BuildContext context) {
+    // final dp = Provider.of<DeliveryProvider>(context);
     final screenWidth = HelperFunctions.screenWidth(context);
     final screenHeight = HelperFunctions.screenHeight(context);
-
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: CSizes.spaceBtwItems),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: CSizes.appBarHeight),
-              const DiscountInfoBanner(),
+      backgroundColor: CColors.primaryBackground,
+      body: Column(
+        children: [
+          // Header section displaying orders
+          Header(
+              title: "Orders",
+              logo: CImages.bag,
+              screenWidth: screenWidth,
+              screenHeight: screenHeight),
 
-              /// Location and wallet icon
-              Row(
-                children: [
-                  SvgPicture.asset(
-                    CImages.locationIcon,
-                  ),
-                  const Text("Raja Park"),
-                  IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.keyboard_arrow_down_rounded)),
-                  SvgPicture.asset(
-                    CImages.walletIcon,
-                  ),
-                ],
-              ),
+          // Date selector for deliveries
+          _buildDateSelector(screenWidth, screenHeight),
 
-              /// Search Bar
-              Card(
-                  color: CColors.white,
-                  elevation: 3,
-                  shadowColor: CColors.lightGrey,
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                        prefixIconConstraints: BoxConstraints(
-                            minWidth: screenWidth * 0.05,
-                            minHeight: screenWidth * 0.05),
-                        prefixIcon: SvgPicture.asset(
-                          CImages.searchIcon,
-                          // height: screenWidth * 0.0,
-                        ),
-                        hintText: "Shop name or service",
-                        hintStyle: const TextStyle(color: CColors.darkGrey)),
-                  )),
-
-              const SizedBox(
-                height: CSizes.spaceBtwItems * 1.5,
-              ),
-
-              /// Filter DropDowns
-              FilterDropDownsList(
-                  screenHeight: screenHeight,
-                  screenWidth: screenWidth,
-                  genderFilerDropDownController:
-                      _genderFilerDropDownController),
-              const SizedBox(
-                height: CSizes.spaceBtwSections,
-              ),
-
-              /// Header
-              const SectionHeading(title: "Beauty services"),
-
-              /// Services
-              SizedBox(
-                height: screenWidth * 0.4,
-                child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) {
-                      return SizedBox(
-                        width: screenWidth * 0.26,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            CircleAvatar(
-                              radius: screenWidth * 0.13,
-                              backgroundImage: AssetImage(
-                                CImages.hairCutForMenImage,
-                              ),
-                            ),
-                            const Text(
-                              "Haircut for men",
-                              overflow: TextOverflow.visible,
-                            )
-                          ],
-                        ),
-                      );
-                    },
-                    separatorBuilder: (context, index) {
-                      return SizedBox(
-                        width: screenWidth * 0.06,
-                      );
-                    },
-                    itemCount: 10),
-              ),
-
-              /// Header
-              const SectionHeading(title: "Beauty Products"),
-
-              /// Services
-              SizedBox(
-                height: screenWidth * 0.4,
-                child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) {
-                      return SizedBox(
-                        width: screenWidth * 0.26,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            CircleAvatar(
-                              radius: screenWidth * 0.13,
-                              backgroundImage: AssetImage(
-                                CImages.hairCutForMenImage,
-                              ),
-                            ),
-                            const Text(
-                              "Haircut for men",
-                              overflow: TextOverflow.visible,
-                            )
-                          ],
-                        ),
-                      );
-                    },
-                    separatorBuilder: (context, index) {
-                      return SizedBox(
-                        width: screenWidth * 0.06,
-                      );
-                    },
-                    itemCount: 10),
-              ),
-
-              const SizedBox(
-                height: CSizes.spaceBtwItems,
-              ),
-
-              /// Header
-              const SectionHeading(
-                title: "Popular near you",
-                showActionButton: false,
-              ),
-              const SizedBox(
-                height: CSizes.spaceBtwSections,
-              ),
-
-              /// Nearby Shop Details
-              SizedBox(
-                height: screenWidth * 0.7,
-                child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) {
-                      return ShopDetailsWidget(screenWidth: screenWidth);
-                    },
-                    separatorBuilder: (context, index) {
-                      return const SizedBox(
-                        width: 35,
-                      );
-                    },
-                    itemCount: 5),
-              ),
-
-              /// Header
-              const SectionHeading(
-                title: "Best Offers",
-              ),
-              const SizedBox(
-                height: CSizes.spaceBtwSections,
-              ),
-
-              /// Best Offers
-              SizedBox(
-                height: screenWidth * 0.7,
-                child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) {
-                      return ShopDetailsWidget(
-                        screenWidth: screenWidth,
-                        isDiscount: true,
-                      );
-                    },
-                    separatorBuilder: (context, index) {
-                      return const SizedBox(
-                        width: 35,
-                      );
-                    },
-                    itemCount: 5),
-              )
-            ],
+          // Main content section for deliveries
+          Expanded(
+            child: Consumer<DeliveryProvider>(
+              builder: (context, dp, child) {
+                if (_hasNoDeliveries(dp)) {
+                  return _buildEmptyOrdersMessage(screenWidth, screenHeight);
+                }
+                return _buildDeliveriesList(dp, screenWidth, screenHeight);
+              },
+            ),
           ),
-        ),
+        ],
+      ),
+      // Footer section with buttons for orders and account
+      bottomNavigationBar: Footer(
+        screenHeight: screenHeight,
+        screenWidth: screenWidth,
+        ordersButton: () {},
+        accountButton: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (_) => const AccountScreen()));
+        },
       ),
     );
   }
-}
 
-class ShopDetailsWidget extends StatelessWidget {
-  const ShopDetailsWidget({
-    super.key,
-    required this.screenWidth,
-    this.isDiscount = false,
-  });
+  deliveryStatusColor(String status) {
+    if (status == "Pickup Pending" || status == "Delivery Pending") {
+      return {
+        "textColor": const Color(0xFFFF5963),
+        "backgroundColor": const Color(0xFFFFDEE0),
+      };
+    } else if (status == "Pickup Failed" || status == "Delivery Failed") {
+      return {
+        "textColor": const Color(0xFFE81F2B),
+        "backgroundColor": const Color(0xFFFEDEE0),
+      };
+    }
+    // else if (status == "Pickup Rescheduled" ||
+    //     status == "Delivery Rescheduled") {
+    //   return {
+    //     "textColor": const Color(0xFF0050AA),
+    //     "backgroundColor": const Color(0xFFEAF4FF),
+    //   };
+    // }
+    else if (status == "Pickup Confirmed" || status == "Delivery Confirmed") {
+      return {
+        "textColor": const Color(0xFFFCF958),
+        "backgroundColor": const Color(0xFFFEFEDE),
+      };
+    } else if (status == "Delivered") {
+      return {
+        "textColor": const Color(0xFF34A853),
+        "backgroundColor": const Color(0xFFEAFFF0),
+      };
+    } else {
+      return {
+        "textColor": const Color(0xFF2B2E35),
+        "backgroundColor": const Color(0xFFF0F0F0),
+      };
+    }
+  }
 
-  final double screenWidth;
-  final bool isDiscount;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+  // Builds the date selector for deliveries
+  Widget _buildDateSelector(double screenHeight, double screenWidth) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        Container(
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(14)),
-            child: Stack(
-              children: [
-                Image(image: AssetImage(CImages.shopImage)),
-                Visibility(
-                  visible: isDiscount,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 10),
-                    decoration: BoxDecoration(
-                        color: CColors.secondary,
-                        borderRadius: BorderRadius.circular(20)),
-                    child: Row(
-                      children: [
-                        SvgPicture.asset(CImages.offersColorsIcon),
-                        const Text("50% Off")
-                      ],
-                    ),
-                  ),
-                )
-              ],
-            )),
-        const SizedBox(
-          height: 5,
-        ),
-        Text(
-          "For MEN & WOMEN",
-          style: TextStyle(
-              fontSize: screenWidth * 0.025,
-              color: CColors.darkGrey,
-              fontWeight: FontWeight.w600),
-        ),
-        Text(
-          "Style N Scissors",
-          style: TextStyle(
-              fontSize: screenWidth * 0.045, fontWeight: FontWeight.w600),
-        ),
-        Row(
-          children: [
-            const Text(
-              "Haircut, Spa, Massage",
-              style: TextStyle(
-                color: CColors.darkGrey,
-              ),
+        GestureDetector(
+          onTap: () {
+            Provider.of<DeliveryProvider>(context, listen: false)
+                .setSelectedValue(context);
+          },
+          child: Container(
+            margin: const EdgeInsets.only(top: 10),
+            padding: EdgeInsets.symmetric(
+              horizontal: screenWidth * 0.02,
+              vertical: screenHeight * 0.015,
             ),
-            const SizedBox(
-              width: 5,
-            ),
-            Icon(
-              Icons.circle,
-              size: screenWidth * 0.02,
-              color: CColors.grey,
-            ),
-            const SizedBox(
-              width: 5,
-            ),
-            Row(
-              children: [
-                SvgPicture.asset(CImages.starIcon),
-                const Text(
-                  "4.1",
-                  style: TextStyle(
-                    color: CColors.darkGrey,
-                  ),
-                )
-              ],
-            )
-          ],
-        ),
-        Row(
-          children: [
-            const Text(
-              "Vaishali Nagar",
-              style: TextStyle(
-                color: CColors.darkGrey,
-              ),
-            ),
-            const SizedBox(
-              width: 5,
-            ),
-            Icon(
-              Icons.circle,
-              size: screenWidth * 0.02,
-              color: CColors.grey,
-            ),
-            const SizedBox(
-              width: 5,
-            ),
-            const Row(
-              children: [
-                Text(
-                  "5.0",
-                  style: TextStyle(
-                    color: CColors.darkGrey,
-                  ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(5),
+              boxShadow: const [
+                BoxShadow(
+                  color: Color(0xFFD9D9D9),
+                  blurRadius: 10,
+                  spreadRadius: 1,
                 ),
-                Text(
-                  "Kms",
-                  style: TextStyle(
-                    color: CColors.darkGrey,
-                  ),
-                )
               ],
             ),
-            const SizedBox(
-              width: 5,
-            ),
-            Icon(
-              Icons.circle,
-              size: screenWidth * 0.02,
-              color: CColors.grey,
-            ),
-            const SizedBox(
-              width: 5,
-            ),
-            const Text(
-              "₹₹",
-              style: TextStyle(
-                color: CColors.darkGrey,
-              ),
-            )
-          ],
+            child: Consumer<DeliveryProvider>(builder: (_, dp, __) {
+              return Text(dp.customDate,
+                  style: CustomTextTheme.lightTextTheme.bodyLarge);
+            }),
+          ),
+        ),
+        const SizedBox(width: 10),
+      ],
+    );
+  }
+
+  // Checks if there are no deliveries for the selected date
+  bool _hasNoDeliveries(DeliveryProvider dp) {
+    return dp.deliveries[dp.customDate] == null ||
+        dp.deliveries[dp.customDate]!.isEmpty ||
+        dp.deliveries.isEmpty ||
+        !dp.deliveries.containsKey(dp.customDate);
+  }
+
+  // Displays a message when there are no orders available
+  Widget _buildEmptyOrdersMessage(double screenWidth, double screenHeight) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const SizedBox(height: 20),
+        SvgPicture.asset(
+          CImages.emptyOrdersList,
+          width: screenWidth * 0.5,
+          height: screenHeight * 0.4,
+        ),
+        const SizedBox(height: 20),
+        const Text(
+          "No Orders Available",
+          style: TextStyle(
+            color: Color(0xFF2B2E35),
+            fontSize: 20,
+          ),
         ),
       ],
     );
   }
-}
 
-class FilterDropDownsList extends StatelessWidget {
-  const FilterDropDownsList({
-    super.key,
-    required this.screenHeight,
-    required this.screenWidth,
-    required DropdownController genderFilerDropDownController,
-  }) : _genderFilerDropDownController = genderFilerDropDownController;
+  // Builds the list of deliveries for the selected date
+  Widget _buildDeliveriesList(
+      DeliveryProvider dp, double screenWidth, double screenHeight) {
+    return ListView.builder(
+      itemCount: dp.deliveries[dp.customDate]?.length ?? 0,
+      itemBuilder: (_, i) {
+        final delivery = dp.deliveries[dp.customDate]![i];
+        return _buildDeliveryCard(dp, delivery, i, screenWidth, screenHeight);
+      },
+    );
+  }
 
-  final double screenHeight;
-  final double screenWidth;
-  final DropdownController _genderFilerDropDownController;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: screenHeight * 0.05,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+  // Builds a single delivery card
+  Widget _buildDeliveryCard(DeliveryProvider dp, DeliveriesModel delivery,
+      int index, double screenWidth, double screenHeight) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 10),
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0xFFD9D9D9),
+            blurRadius: 20,
+            spreadRadius: 1,
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Gender
-          SizedBox(
-            width: screenWidth * 0.3,
-            child: CoolDropdown(
-              controller: _genderFilerDropDownController,
-              dropdownList: const [],
-              onChange: (value) {
-                _genderFilerDropDownController.close();
-              },
-              resultOptions: ResultOptions(
-                mainAxisAlignment: MainAxisAlignment.end,
-                placeholder: "Gender",
-                placeholderTextStyle: TextStyle(
-                    fontSize: screenWidth * 0.045, color: CColors.darkGrey),
-                boxDecoration: BoxDecoration(
-                    // border: Border.all(color: CColors.grey),
-                    color: CColors.lightGrey,
-                    borderRadius: BorderRadius.circular(screenWidth * 0.2)),
-                render: ResultRender.label,
-                icon: const SizedBox(
-                  width: 10,
-                  height: 10,
-                  child: CustomPaint(
-                    painter: DropdownArrowPainter(color: Color(0xff8787FF)),
-                  ),
-                ),
-              ),
-              dropdownOptions: DropdownOptions(
-                  align: DropdownAlign.left,
-                  borderRadius: BorderRadius.circular(10)),
-              dropdownItemOptions: DropdownItemOptions(
-                boxDecoration:
-                    BoxDecoration(color: CColors.secondary.withOpacity(0.5)),
-                selectedTextStyle: TextStyle(
-                  color: CColors.white,
-                  fontSize: screenWidth * 0.02,
-                ),
-                selectedBoxDecoration:
-                    BoxDecoration(color: CColors.secondary.withOpacity(0.5)),
-              ),
-            ),
-          ),
-          const SizedBox(
-            width: CSizes.spaceBtwItems,
-          ),
-
-          // Price
-          SizedBox(
-            width: screenWidth * 0.3,
-            child: CoolDropdown(
-              controller: _genderFilerDropDownController,
-              dropdownList: const [],
-              onChange: (value) {
-                _genderFilerDropDownController.close();
-              },
-              resultOptions: ResultOptions(
-                mainAxisAlignment: MainAxisAlignment.end,
-                placeholder: "Price",
-                placeholderTextStyle: TextStyle(
-                    fontSize: screenWidth * 0.045, color: CColors.darkGrey),
-                boxDecoration: BoxDecoration(
-                    // border: Border.all(color: CColors.grey),
-                    color: CColors.lightGrey,
-                    borderRadius: BorderRadius.circular(screenWidth * 0.2)),
-                render: ResultRender.label,
-                icon: const SizedBox(
-                  width: 10,
-                  height: 10,
-                  child: CustomPaint(
-                    painter: DropdownArrowPainter(color: Color(0xff8787FF)),
-                  ),
-                ),
-              ),
-              dropdownOptions: DropdownOptions(
-                  align: DropdownAlign.left,
-                  borderRadius: BorderRadius.circular(10)),
-              dropdownItemOptions: DropdownItemOptions(
-                boxDecoration:
-                    BoxDecoration(color: CColors.secondary.withOpacity(0.5)),
-                selectedTextStyle: TextStyle(
-                  color: CColors.white,
-                  fontSize: screenWidth * 0.02,
-                ),
-                selectedBoxDecoration:
-                    BoxDecoration(color: CColors.secondary.withOpacity(0.5)),
-              ),
-            ),
-          ),
-          const SizedBox(
-            width: CSizes.spaceBtwItems,
-          ),
-          // Offers
-          SizedBox(
-            width: screenWidth * 0.3,
-            child: CoolDropdown(
-              controller: _genderFilerDropDownController,
-              dropdownList: const [],
-              onChange: (value) {
-                _genderFilerDropDownController.close();
-              },
-              resultOptions: ResultOptions(
-                mainAxisAlignment: MainAxisAlignment.end,
-                placeholder: "Offers",
-                placeholderTextStyle: TextStyle(
-                    fontSize: screenWidth * 0.045, color: CColors.darkGrey),
-                boxDecoration: BoxDecoration(
-                    // border: Border.all(color: CColors.grey),
-                    color: CColors.lightGrey,
-                    borderRadius: BorderRadius.circular(screenWidth * 0.2)),
-                render: ResultRender.label,
-                icon: const SizedBox(
-                  width: 10,
-                  height: 10,
-                  child: CustomPaint(
-                    painter: DropdownArrowPainter(color: Color(0xff8787FF)),
-                  ),
-                ),
-              ),
-              dropdownOptions: DropdownOptions(
-                  align: DropdownAlign.left,
-                  borderRadius: BorderRadius.circular(10)),
-              dropdownItemOptions: DropdownItemOptions(
-                boxDecoration:
-                    BoxDecoration(color: CColors.secondary.withOpacity(0.5)),
-                selectedTextStyle: TextStyle(
-                  color: CColors.white,
-                  fontSize: screenWidth * 0.02,
-                ),
-                selectedBoxDecoration:
-                    BoxDecoration(color: CColors.secondary.withOpacity(0.5)),
-              ),
-            ),
-          ),
-          const SizedBox(
-            width: CSizes.spaceBtwItems,
-          ),
+          _buildDeliveryHeader(dp, delivery, index, screenWidth, screenHeight),
+          _buildDeliveryDetails(dp, delivery, index, screenWidth, screenHeight),
+          _buildExpandCollapseButton(dp, index),
         ],
       ),
     );
   }
-}
 
-class DiscountInfoBanner extends StatelessWidget {
-  const DiscountInfoBanner({
-    super.key,
-  });
+  // Builds the header for the delivery card
+  Widget _buildDeliveryHeader(DeliveryProvider dp, DeliveriesModel delivery,
+      int index, double screenWidth, double screenHeight) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        _buildDeliveryOrderInfo(delivery),
+        _buildDeliveryStatus(delivery),
+      ],
+    );
+  }
 
-  @override
-  Widget build(BuildContext context) {
+  // Builds the order information for the delivery card
+  Widget _buildDeliveryOrderInfo(DeliveriesModel delivery) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text("Order No.", style: CustomTextTheme.lightTextTheme.titleMedium),
+        Text("#${delivery.deliveryId}",
+            style: CustomTextTheme.lightTextTheme.bodySmall),
+      ],
+    );
+  }
+
+  // Builds the status of the delivery
+  Widget _buildDeliveryStatus(DeliveriesModel delivery) {
+    final statusColor = deliveryStatusColor(delivery.status);
     return Container(
-      padding: const EdgeInsets.symmetric(
-          horizontal: CSizes.spaceBtwItems, vertical: CSizes.sm * 1.5),
-      decoration: const BoxDecoration(
-          gradient:
-              LinearGradient(colors: [CColors.primary, CColors.secondary]),
-          borderRadius:
-              BorderRadius.all(Radius.circular(CSizes.borderRadiusMd))),
-      child: const Row(
-        children: [
-          Spacer(),
-          Text("Up to 15% off all services"),
-          Spacer(),
-          Icon(Icons.chevron_right)
-        ],
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: statusColor["backgroundColor"] as Color,
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: Text(
+        delivery.status,
+        style: CustomTextTheme.lightTextTheme.bodySmall?.copyWith(
+          color: statusColor["textColor"] as Color,
+        ),
       ),
     );
+  }
+
+  // Builds the details of the delivery
+  Widget _buildDeliveryDetails(DeliveryProvider dp, DeliveriesModel delivery,
+      int index, double screenWidth, double screenHeight) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+      height: dp.isExpandedList[index] ? null : 0, // Expand or collapse
+      child: dp.isExpandedList[index]
+          ? _buildExpandedDetails(dp, delivery, screenWidth, screenHeight)
+          : null,
+    );
+  }
+
+  // Builds the expanded details of the delivery
+  Widget _buildExpandedDetails(DeliveryProvider dp, DeliveriesModel delivery,
+      double screenWidth, double screenHeight) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 10),
+        const DottedLine(),
+        const SizedBox(height: 10),
+        _buildUserInfo(
+            screenWidth,
+            screenHeight,
+            delivery.user.userName,
+            delivery.user.userLocation.locationAddress,
+            CImages.pick,
+            delivery.user.userPhone,
+            delivery.user.userLocation.locationLatitude,
+            delivery.user.userLocation.locationLongitude),
+        const SizedBox(height: 10),
+        const Divider(),
+        const SizedBox(height: 2),
+        _buildUserInfo(
+            screenWidth,
+            screenHeight,
+            delivery.laundary.laundaryName,
+            delivery.laundary.laundaryLocation.locationAddress,
+            CImages.mapPin,
+            delivery.laundary.laundaryPhone,
+            delivery.laundary.laundaryLocation.locationLatitude,
+            delivery.laundary.laundaryLocation.locationLongitude),
+        const SizedBox(height: 10),
+        _buildPriceInfo(delivery, screenWidth, screenHeight),
+        const SizedBox(height: 20),
+        _buildConfirmPickupButton(
+          delivery.status,
+          screenHeight,
+          screenWidth,
+          delivery.docId,
+          delivery.status == "New Order"
+              ? delivery.user.userLocation.locationAddress
+              : delivery.laundary.laundaryLocation.locationAddress,
+          delivery.status == "New Order"
+              ? delivery.user.userName
+              : delivery.laundary.laundaryName,
+          delivery.status == "New Order"
+              ? delivery.user.userLocation.locationLatitude
+              : delivery.laundary.laundaryLocation.locationLatitude,
+          delivery.status == "New Order"
+              ? delivery.user.userLocation.locationLongitude
+              : delivery.laundary.laundaryLocation.locationLongitude,
+          delivery.status == "New Order"
+              ? delivery.user.userPhone
+              : delivery.laundary.laundaryPhone,
+        ),
+        const SizedBox(height: 10),
+      ],
+    );
+  }
+
+  // Builds user information in the expanded details
+  Widget _buildUserInfo(
+      double screenWidth,
+      double screenHeight,
+      String userName,
+      String userAddress,
+      String icon,
+      String userPhone,
+      double latitude,
+      double longitude) {
+    return Column(
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            SvgPicture.asset(
+              CImages.userAlt,
+              height: screenHeight * 0.035,
+              width: screenWidth * 0.035,
+            ),
+            const SizedBox(width: 10),
+            Text(userName, style: CustomTextTheme.lightTextTheme.titleLarge),
+            const Spacer(),
+            GestureDetector(
+              onTap: () async {
+                final Uri launchUri = Uri(
+                  scheme: 'tel',
+                  path: userPhone,
+                );
+                await launchUrl(launchUri);
+              },
+              child: SvgPicture.asset(
+                CImages.phone,
+                height: screenHeight * 0.035,
+                width: screenWidth * 0.035,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 5),
+        Row(
+          children: [
+            SvgPicture.asset(icon,
+                height: screenHeight * 0.025, width: screenWidth * 0.025),
+            SizedBox(
+              width: screenWidth * 0.035,
+            ),
+            SizedBox(
+              width: screenWidth * 0.5,
+              child: Text(userAddress,
+                  style: CustomTextTheme.lightTextTheme.bodySmall?.copyWith(
+                    color: const Color(0xFF57585A),
+                  )),
+            ),
+            const Spacer(),
+            GestureDetector(
+              onTap: () {
+                openMap(latitude, longitude);
+              },
+              child: SvgPicture.asset(
+                CImages.send,
+                height: screenHeight * 0.035,
+                width: screenWidth * 0.035,
+              ),
+            ),
+          ],
+        )
+      ],
+    );
+  }
+
+  // Builds price information in the expanded details
+  Widget _buildPriceInfo(
+      DeliveriesModel delivery, double screenWidth, double screenHeight) {
+    return Row(
+      children: [
+        SvgPicture.asset(
+          CImages.money,
+          height: screenHeight * 0.035,
+          width: screenWidth * 0.035,
+        ),
+        SizedBox(
+          width: screenWidth * 0.035,
+        ),
+        Text("₹ ${delivery.price}",
+            style: CustomTextTheme.lightTextTheme.titleMedium),
+        SizedBox(
+          width: screenWidth * 0.035,
+        ),
+        SvgPicture.asset(
+          CImages.paid,
+          height: screenHeight * 0.03,
+          width: screenWidth * 0.03,
+        ),
+        Text("Paid",
+            style: CustomTextTheme.lightTextTheme.titleMedium?.copyWith(
+              color: const Color(0xFF34A853),
+            )),
+      ],
+    );
+  }
+
+  // Button to confirm the pickup of the delivery
+  Widget _buildConfirmPickupButton(
+      String status,
+      double screenHeight,
+      double screenWidth,
+      String docId,
+      String address,
+      String name,
+      double latitude,
+      double longitude,
+      String phone) {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: () async {
+          if (status == "Completed") {
+            return;
+          }
+          if (_checkNextStatusForButton(status) == "Accept" ||
+              _checkNextStatusForButton(status) == "Confirm Pickup") {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (_) => MapScreen(
+                          address: address,
+                          name: name,
+                          phone: phone,
+                          latitude: latitude,
+                          longitude: longitude,
+                          curLat: 0.0,
+                          curLong: 0.0,
+                        )));
+          }
+          await FirebaseFirestore.instance
+              .collection("deliveries")
+              .doc(docId)
+              .update({
+            'status': _setNextStatusForOrder(_checkNextStatusForButton(status))
+          });
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor:
+              status == "Completed" ? CColors.secondary : CColors.primary,
+          foregroundColor: Colors.white,
+        ),
+        child: Text(
+          _checkNextStatusForButton(status),
+          style: CustomTextTheme.lightTextTheme.titleMedium?.copyWith(
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Button to expand/collapse the delivery card
+  Widget _buildExpandCollapseButton(DeliveryProvider dp, int index) {
+    return Align(
+      alignment: Alignment.center,
+      child: GestureDetector(
+        child: Icon(
+          dp.isExpandedList[index] ? Icons.expand_less : Icons.expand_more,
+        ),
+        onTap: () {
+          dp.toggleExpand(index); // Toggle the expansion state
+        },
+      ),
+    );
+  }
+
+  _checkNextStatusForButton(String status) {
+    switch (status) {
+      case "New Order":
+        return "Accept";
+      case "Pickup Pending":
+        return "Confirm Pickup";
+      case "Delivery Pending":
+        return "Confirm Delivery";
+      case "Completed":
+        return "Completed";
+    }
+  }
+
+  _setNextStatusForOrder(String value) {
+    switch (value) {
+      case "Accept":
+        return "Pickup Pending";
+      case "Confirm Pickup":
+        return "Delivery Pending";
+      case "Confirm Delivery":
+        return "Completed";
+    }
+  }
+
+  _getCurrentLocation() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Geolocator.openLocationSettings();
+    }
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Geolocator.openAppSettings();
+      }
+    }
+
+    final Position position = await Geolocator.getCurrentPosition();
+
+    curLat = position.latitude;
+    curLong = position.longitude;
+
+    log('Current Location: $curLat, $curLong');
   }
 }

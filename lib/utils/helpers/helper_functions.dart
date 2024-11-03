@@ -1,11 +1,10 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:intl/intl.dart';
 
 import '../constants/color.dart';
-import '../constants/image_strings.dart';
-import '../constants/sizes.dart';
 
 class HelperFunctions {
   static Color? getColor(String value) {
@@ -50,94 +49,93 @@ class HelperFunctions {
       backgroundColor: backgroundColor,
       content: Text(
         message,
-        style: TextStyle(color: CColors.white),
+        style: const TextStyle(color: CColors.white),
       ),
       behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(CSizes.borderRadiusLg)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     ));
   }
 
-  static void showAlert(BuildContext context, String title, String message) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(CSizes.md),
-            ),
-            elevation: 0.0,
-            backgroundColor: Colors.transparent,
-            child: Stack(
-              children: <Widget>[
-                //...bottom card part,
-
-                Container(
-                  padding: EdgeInsets.only(
-                    top: CSizes.appBarHeight + CSizes.md,
-                    bottom: CSizes.md,
-                    left: CSizes.md,
-                    right: CSizes.md,
-                  ),
-                  margin: EdgeInsets.only(top: CSizes.appBarHeight),
-                  decoration: new BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.rectangle,
-                    borderRadius: BorderRadius.circular(CSizes.md),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 10.0,
-                        offset: const Offset(0.0, 10.0),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min, // To make the card compact
-                    children: <Widget>[
-                      Text(
-                        title,
-                        style: TextStyle(
-                          fontSize: 24.0,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      SizedBox(height: 16.0),
-                      Text(
-                        message,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16.0,
-                        ),
-                      ),
-                      SizedBox(height: 24.0),
-                      Align(
-                        alignment: Alignment.bottomRight,
-                        child: TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop(); // To close the dialog
-                          },
-                          child: Text("Ok"),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                //...top circlular image part,
-                Positioned(
-                  left: CSizes.md,
-                  right: CSizes.md,
-                  child: CircleAvatar(
-                    backgroundColor: CColors.secondary,
-                    radius: CSizes.appBarHeight,
-                    child: Image.asset(CImages.appLogo),
-                  ),
-                ),
-              ],
-            ),
-          );
-        });
-  }
+  // static void showAlert(BuildContext context, String title, String message) {
+  //   showDialog(
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return Dialog(
+  //           shape: RoundedRectangleBorder(
+  //             borderRadius: BorderRadius.circular(20),
+  //           ),
+  //           elevation: 0.0,
+  //           backgroundColor: Colors.transparent,
+  //           child: Stack(
+  //             children: <Widget>[
+  //               //...bottom card part,
+  //
+  //               Container(
+  //                 padding: EdgeInsets.only(
+  //                   top: CSizes.appBarHeight + CSizes.md,
+  //                   bottom: CSizes.md,
+  //                   left: CSizes.md,
+  //                   right: CSizes.md,
+  //                 ),
+  //                 margin: EdgeInsets.only(top: CSizes.appBarHeight),
+  //                 decoration: new BoxDecoration(
+  //                   color: Colors.white,
+  //                   shape: BoxShape.rectangle,
+  //                   borderRadius: BorderRadius.circular(CSizes.md),
+  //                   boxShadow: [
+  //                     BoxShadow(
+  //                       color: Colors.black26,
+  //                       blurRadius: 10.0,
+  //                       offset: const Offset(0.0, 10.0),
+  //                     ),
+  //                   ],
+  //                 ),
+  //                 child: Column(
+  //                   mainAxisSize: MainAxisSize.min, // To make the card compact
+  //                   children: <Widget>[
+  //                     Text(
+  //                       title,
+  //                       style: TextStyle(
+  //                         fontSize: 24.0,
+  //                         fontWeight: FontWeight.w700,
+  //                       ),
+  //                     ),
+  //                     SizedBox(height: 16.0),
+  //                     Text(
+  //                       message,
+  //                       textAlign: TextAlign.center,
+  //                       style: TextStyle(
+  //                         fontSize: 16.0,
+  //                       ),
+  //                     ),
+  //                     SizedBox(height: 24.0),
+  //                     Align(
+  //                       alignment: Alignment.bottomRight,
+  //                       child: TextButton(
+  //                         onPressed: () {
+  //                           Navigator.of(context).pop(); // To close the dialog
+  //                         },
+  //                         child: Text("Ok"),
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ),
+  //               //...top circlular image part,
+  //               Positioned(
+  //                 left: CSizes.md,
+  //                 right: CSizes.md,
+  //                 child: CircleAvatar(
+  //                   backgroundColor: CColors.secondary,
+  //                   radius: CSizes.appBarHeight,
+  //                   child: Image.asset(CImages.appLogo),
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         );
+  //       });
+  // }
 
   static void navigateToScreen(BuildContext context, Widget screen) {
     Navigator.push(context, MaterialPageRoute(builder: (_) => screen));

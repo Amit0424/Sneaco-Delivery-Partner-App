@@ -14,15 +14,34 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 import 'package:sneaco_delivery_partner_app/common/widgets/text_field/custom_text_field.dart';
+import 'package:sneaco_delivery_partner_app/screens/profile/provider/profile_provider.dart';
 import 'package:sneaco_delivery_partner_app/utils/helpers/helper_functions.dart';
 
+import '../../common/functions/date_time_to_string.dart';
 import '../../utils/constants/color.dart';
 import '../../utils/constants/image_strings.dart';
 import '../../utils/theme/custom_themes/text_theme.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+  const ProfileScreen(
+      {super.key,
+      this.firstName,
+      this.lastName,
+      this.dob,
+      this.whatsapp,
+      this.city,
+      this.email,
+      this.imageUrl});
+
+  final String? firstName;
+  final String? lastName;
+  final DateTime? dob;
+  final String? whatsapp;
+  final String? city;
+  final String? email;
+  final String? imageUrl;
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -37,6 +56,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController _mobileController = TextEditingController();
   final TextEditingController _whatsappController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
 
   DateTime? picked;
   String _profileUrl = "";
@@ -50,6 +70,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     _mobileController.text =
         FirebaseAuth.instance.currentUser?.phoneNumber!.split("+91").last ?? "";
+    picked = widget.dob;
+    assignProfileValues(
+        firstName: widget.firstName,
+        lastName: widget.lastName,
+        whatsapp: widget.whatsapp,
+        email: widget.email,
+        dob: dateTimeToString(widget.dob!),
+        city: widget.city,
+        imageUrl: widget.imageUrl);
     super.initState();
   }
 
@@ -126,6 +155,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     keyboardType: TextInputType.text,
                     errorText: "Enter a valid last name",
                     minLength: 3,
+                  ),
+                  SizedBox(
+                    height: screenHeight * 0.01,
+                  ),
+                  Text(
+                    "Email",
+                    style: CustomTextTheme.lightTextTheme.titleMedium,
+                  ),
+                  SizedBox(
+                    height: screenHeight * 0.005,
+                  ),
+                  CustomTextField(
+                    controller: _emailController,
+                    readOnly: false,
+                    hintText: "Please enter email",
+                    inputFormatter: FilteringTextInputFormatter.allow(
+                        RegExp(r'[a-zA-Z0-9@._-]')),
+                    onSubmitted: () {},
+                    keyboardType: TextInputType.emailAddress,
+                    errorText: "Enter a valid email",
+                    minLength: 11,
                   ),
                   SizedBox(
                     height: screenHeight * 0.01,
@@ -357,6 +407,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   SizedBox(height: screenHeight * 0.02),
                   ElevatedButton(
                     onPressed: () async {
+                      final ProfileProvider pp =
+                          Provider.of<ProfileProvider>(context, listen: false);
+
                       if (_formKey.currentState!.validate() &&
                           _profileUrl.isNotEmpty) {
                         // If the form is valid, save the input
@@ -366,30 +419,60 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         });
                         final uid = FirebaseAuth.instance.currentUser!.uid;
                         // Upload the data to the server
-                        await FirebaseFirestore.instance
-                            .collection('deliveryPartners')
-                            .doc(uid)
-                            .set({
-                          'firstName': _firstNameController.text,
-                          'lastName': _lastNameController.text,
-                          'dob': picked,
-                          'mobile': _mobileController.text,
-                          'whatsapp': _whatsappController.text,
-                          'city': _cityController.text,
-                          'profileUrl': _profileUrl,
-                          'latitude': _latitude,
-                          'longitude': _longitude,
-                          'geoHash': geoHash,
-                        }).then((value) {
-                          setState(() {
-                            _isDataUploading = false;
+                        if (uid == pp.profile.id) {
+                          await FirebaseFirestore.instance
+                              .collection('deliveryPartners')
+                              .doc(uid)
+                              .update({
+                            'firstName': _firstNameController.text,
+                            'lastName': _lastNameController.text,
+                            'dob': picked,
+                            'mobile': _mobileController.text,
+                            'email': _emailController.text,
+                            'whatsapp': _whatsappController.text,
+                            'city': _cityController.text,
+                            'profileUrl': _profileUrl,
+                            'latitude': _latitude,
+                            'longitude': _longitude,
+                            'geoHash': geoHash,
+                          }).then((value) {
+                            setState(() {
+                              _isDataUploading = false;
+                            });
+                            Navigator.pop(context);
+                          }).catchError((error) {
+                            setState(() {
+                              _isDataUploading = false;
+                            });
+                            log('Error occurred while saving data: $error');
                           });
-                        }).catchError((error) {
-                          setState(() {
-                            _isDataUploading = false;
+                        } else {
+                          await FirebaseFirestore.instance
+                              .collection('deliveryPartners')
+                              .doc(uid)
+                              .set({
+                            'firstName': _firstNameController.text,
+                            'lastName': _lastNameController.text,
+                            'dob': picked,
+                            'mobile': _mobileController.text,
+                            'email': _emailController.text,
+                            'whatsapp': _whatsappController.text,
+                            'city': _cityController.text,
+                            'profileUrl': _profileUrl,
+                            'latitude': _latitude,
+                            'longitude': _longitude,
+                            'geoHash': geoHash,
+                          }).then((value) {
+                            setState(() {
+                              _isDataUploading = false;
+                            });
+                          }).catchError((error) {
+                            setState(() {
+                              _isDataUploading = false;
+                            });
+                            log('Error occurred while saving data: $error');
                           });
-                          log('Error occurred while saving data: $error');
-                        });
+                        }
                       }
                     },
                     style: ElevatedButton.styleFrom(
@@ -399,11 +482,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       disabledForegroundColor: Colors.white,
                       side: const BorderSide(color: Colors.transparent),
                       padding: const EdgeInsets.symmetric(vertical: 0),
-                      textStyle: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                        color: Colors.white,
-                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50),
                       ),
@@ -413,7 +491,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ? const CircularProgressIndicator(
                             color: Colors.white,
                           )
-                        : const Text("Submit"),
+                        : const Text(
+                            "Submit",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                              color: Colors.white,
+                            ),
+                          ),
                   ),
                   SizedBox(height: screenHeight * 0.02),
                 ],
@@ -559,5 +644,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
       log('Error occurred while uploading image: $e');
     }
+  }
+
+  assignProfileValues(
+      {required String? firstName,
+      required String? lastName,
+      required String? whatsapp,
+      required String? email,
+      required String? dob,
+      required String? city,
+      required String? imageUrl}) {
+    _firstNameController.text = firstName ?? '';
+    _lastNameController.text = lastName ?? '';
+    _whatsappController.text = whatsapp ?? '';
+    _emailController.text = email ?? '';
+    _dobController.text = dob ?? '';
+    _cityController.text = city ?? '';
+    _profileUrl = imageUrl ?? '';
   }
 }
