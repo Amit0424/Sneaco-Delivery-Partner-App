@@ -16,15 +16,14 @@ import '../../common/functions/open_google_map.dart';
 import '../../utils/constants/color.dart';
 
 class MapScreen extends StatefulWidget {
-  const MapScreen(
-      {super.key,
-      required this.address,
-      required this.name,
-      required this.phone,
-      required this.latitude,
-      required this.longitude,
-      required this.curLat,
-      required this.curLong});
+  const MapScreen({super.key,
+    required this.address,
+    required this.name,
+    required this.phone,
+    required this.latitude,
+    required this.longitude,
+    required this.curLat,
+    required this.curLong});
 
   final String address;
   final String name;
@@ -62,7 +61,9 @@ class _MapScreenState extends State<MapScreen> {
   Future<List<LatLng>> _getRouteCoordinates(LatLng start, LatLng end) async {
     const apiKey = 'AIzaSyAS8jsRdSwGoyZGirO8twlAOcDclapcsiM';
     final url =
-        'https://maps.googleapis.com/maps/api/directions/json?origin=${start.latitude},${start.longitude}&destination=${end.latitude},${end.longitude}&key=$apiKey';
+        'https://maps.googleapis.com/maps/api/directions/json?origin=${start
+        .latitude},${start.longitude}&destination=${end.latitude},${end
+        .longitude}&key=$apiKey';
     final response = await http.get(Uri.parse(url));
     final data = jsonDecode(response.body);
 
@@ -77,11 +78,15 @@ class _MapScreenState extends State<MapScreen> {
 
   List<LatLng> _decodePolyline(String polyline) {
     List<LatLng> points = [];
-    int index = 0, len = polyline.length;
-    int lat = 0, lng = 0;
+    int index = 0,
+        len = polyline.length;
+    int lat = 0,
+        lng = 0;
 
     while (index < len) {
-      int b, shift = 0, result = 0;
+      int b,
+          shift = 0,
+          result = 0;
       do {
         b = polyline.codeUnitAt(index++) - 63;
         result |= (b & 0x1F) << shift;
@@ -142,111 +147,111 @@ class _MapScreenState extends State<MapScreen> {
     return Scaffold(
       body: _currentPosition == null
           ? const Center(
-              child: CircularProgressIndicator(
-                color: CColors.primary,
-              ),
-            )
+        child: CircularProgressIndicator(
+          color: CColors.primary,
+        ),
+      )
           : Column(
-              children: [
-                SizedBox(
-                  width: screenWidth,
-                  height: screenHeight * 0.7,
-                  child: GoogleMap(
-                    mapType: MapType.normal,
-                    initialCameraPosition: CameraPosition(
-                      target: LatLng(widget.latitude, widget.longitude),
-                      zoom: 14.4746,
-                    ),
-                    markers: {
-                      Marker(
-                        markerId: const MarkerId('1'),
-                        position: LatLng(widget.latitude, widget.longitude),
-                        infoWindow: InfoWindow(
-                            title: widget.name, snippet: widget.phone),
-                      ),
-                    },
-                    polylines: _polylines,
-                    onMapCreated: (controller) => _mapController = controller,
-                    myLocationEnabled: true,
-                    myLocationButtonEnabled: true,
-                  ),
+        children: [
+          SizedBox(
+            width: screenWidth,
+            height: screenHeight * 0.7,
+            child: GoogleMap(
+              mapType: MapType.normal,
+              initialCameraPosition: CameraPosition(
+                target: LatLng(widget.latitude, widget.longitude),
+                zoom: 14.4746,
+              ),
+              markers: {
+                Marker(
+                  markerId: const MarkerId('1'),
+                  position: LatLng(widget.latitude, widget.longitude),
+                  infoWindow: InfoWindow(
+                      title: widget.name, snippet: widget.phone),
                 ),
-                const SizedBox(height: 20),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const SizedBox(width: 20),
-                    SvgPicture.asset(CImages.userAlt),
-                    const SizedBox(width: 10),
-                    Text(
-                      widget.name,
-                      style: CustomTextTheme.lightTextTheme.headlineMedium,
-                    ),
-                    const SizedBox(width: 30),
-                    GestureDetector(
-                      onTap: () async {
-                        final Uri launchUri = Uri(
-                          scheme: 'tel',
-                          path: widget.phone,
-                        );
-                        await launchUrl(launchUri);
-                      },
-                      child: SvgPicture.asset(CImages.phone),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const SizedBox(width: 20),
-                    SvgPicture.asset(CImages.mapPin),
-                    const SizedBox(width: 10),
-                    SizedBox(
-                      width: screenWidth * 0.7,
-                      child: Text(
-                        widget.address,
-                        style: CustomTextTheme.lightTextTheme.headlineSmall,
-                      ),
-                    ),
-                  ],
-                ),
-                const Spacer(),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      openMap(widget.latitude, widget.longitude);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      elevation: 0,
-                      backgroundColor: CColors.primary,
-                      disabledBackgroundColor: Colors.grey,
-                      disabledForegroundColor: Colors.white,
-                      side: const BorderSide(color: Colors.transparent),
-                      padding: const EdgeInsets.symmetric(vertical: 0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                      fixedSize: Size(screenWidth, screenHeight * 0.06),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SvgPicture.asset(CImages.sendAlt),
-                        const SizedBox(width: 15),
-                        Text(
-                          'Start Delivery',
-                          style: CustomTextTheme.lightTextTheme.titleSmall
-                              ?.copyWith(color: Colors.white),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-              ],
+              },
+              polylines: _polylines,
+              onMapCreated: (controller) => _mapController = controller,
+              myLocationEnabled: true,
+              myLocationButtonEnabled: true,
             ),
+          ),
+          const SizedBox(height: 20),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(width: 20),
+              SvgPicture.asset(CImages.userAlt),
+              const SizedBox(width: 10),
+              Text(
+                widget.name,
+                style: CustomTextTheme.lightTextTheme.headlineMedium,
+              ),
+              const SizedBox(width: 30),
+              GestureDetector(
+                onTap: () async {
+                  final Uri launchUri = Uri(
+                    scheme: 'tel',
+                    path: widget.phone,
+                  );
+                  await launchUrl(launchUri);
+                },
+                child: SvgPicture.asset(CImages.phone),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(width: 20),
+              SvgPicture.asset(CImages.mapPin),
+              const SizedBox(width: 10),
+              SizedBox(
+                width: screenWidth * 0.7,
+                child: Text(
+                  widget.address,
+                  style: CustomTextTheme.lightTextTheme.headlineSmall,
+                ),
+              ),
+            ],
+          ),
+          const Spacer(),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: ElevatedButton(
+              onPressed: () {
+                openMap(widget.latitude, widget.longitude);
+              },
+              style: ElevatedButton.styleFrom(
+                elevation: 0,
+                backgroundColor: CColors.primary,
+                disabledBackgroundColor: Colors.grey,
+                disabledForegroundColor: Colors.white,
+                side: const BorderSide(color: Colors.transparent),
+                padding: const EdgeInsets.symmetric(vertical: 0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                fixedSize: Size(screenWidth, screenHeight * 0.06),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SvgPicture.asset(CImages.sendAlt),
+                  const SizedBox(width: 15),
+                  Text(
+                    'Start',
+                    style: CustomTextTheme.lightTextTheme.titleSmall
+                        ?.copyWith(color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+        ],
+      ),
     );
   }
 }
