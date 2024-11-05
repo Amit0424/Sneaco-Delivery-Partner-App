@@ -47,6 +47,6 @@ Use the command below to generate a production build for Android:
 ## Contact
 Amit Chaudhary - [@linkedInHandle](https://www.linkedin.com/in/amit0424/)
 
-Project Link: [https://github.com/yourusername/your-repo-name](https://github.com/Amit0424/Sneaco-Delivery-Partner-App)
+Project Link: https://github.com/Amit0424/Sneaco-Delivery-Partner-App
 
 Distributed by Amit Chaudhary.
