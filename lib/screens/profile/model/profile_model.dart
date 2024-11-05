@@ -28,15 +28,15 @@ class ProfileModel {
   factory ProfileModel.fromMap(Map<String, dynamic> map, String id) {
     return ProfileModel(
       id: id,
-      firstName: map['firstName'],
-      lastName: map['lastName'],
-      email: map['email'],
-      mobile: map['mobile'],
-      whatsapp: map['whatsapp'],
-      imageUrl: map['profileUrl'],
-      dateOfBirth: (map['dob'] as Timestamp).toDate(),
-      city: map['city'],
-      rating: map['rating'],
+      firstName: map['firstName'] ?? '',
+      lastName: map['lastName'] ?? '',
+      email: map['email'] ?? '',
+      mobile: map['mobile'] ?? '',
+      whatsapp: map['whatsapp'] ?? '',
+      imageUrl: map['profileUrl'] ?? '',
+      dateOfBirth: (map['dob'] as Timestamp).toDate() ?? DateTime.now(),
+      city: map['city'] ?? '',
+      rating: map['rating'] ?? '',
     );
   }
 }

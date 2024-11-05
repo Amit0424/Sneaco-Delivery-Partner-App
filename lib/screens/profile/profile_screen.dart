@@ -76,7 +76,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         lastName: widget.lastName,
         whatsapp: widget.whatsapp,
         email: widget.email,
-        dob: dateTimeToString(widget.dob!),
+        dob: dateTimeToString(widget.dob ?? DateTime.now()),
         city: widget.city,
         imageUrl: widget.imageUrl);
     super.initState();
@@ -658,7 +658,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _lastNameController.text = lastName ?? '';
     _whatsappController.text = whatsapp ?? '';
     _emailController.text = email ?? '';
-    _dobController.text = dob ?? '';
+    _dobController.text = (widget.dob != null ? dob : '')!;
     _cityController.text = city ?? '';
     _profileUrl = imageUrl ?? '';
   }

@@ -62,8 +62,8 @@ class DeliveryProvider extends ChangeNotifier {
         .collection("deliveries")
         .where("deliveryPartner.deliveryPartnerId",
             isEqualTo: FirebaseAuth.instance.currentUser!.uid)
-        .where("deliveryDate", isGreaterThanOrEqualTo: startDate)
-        .where("deliveryDate", isLessThanOrEqualTo: endDate)
+        // .where("deliveryDate", isGreaterThanOrEqualTo: startDate)
+        // .where("deliveryDate", isLessThanOrEqualTo: endDate)
         .get()
         .then((value) {
       log('Get Deliveries');
@@ -84,8 +84,8 @@ class DeliveryProvider extends ChangeNotifier {
         .collection("deliveries")
         .where("deliveryPartner.deliveryPartnerId",
             isEqualTo: FirebaseAuth.instance.currentUser!.uid)
-        .where("deliveryDate", isGreaterThanOrEqualTo: startDate)
-        .where("deliveryDate", isLessThanOrEqualTo: endDate)
+        // .where("deliveryDate", isGreaterThanOrEqualTo: startDate)
+        // .where("deliveryDate", isLessThanOrEqualTo: endDate)
         .snapshots()
         .listen((event) {
       deliveries[customDate] = event.docs
